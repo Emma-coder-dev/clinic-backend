@@ -38,14 +38,25 @@ if (!process.env.MONGO_URI) {
   console.warn("💡 For production, set MONGO_URI to your MongoDB Atlas connection string.");
 }
 
-mongoose.connect(mongoURI)
+// MongoDB connection options
+const mongoOptions = {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+};
+
+mongoose.connect(mongoURI, mongoOptions)
   .then(() => console.log("✅ MongoDB connected successfully"))
   .catch((err) => {
     console.error("❌ MongoDB connection error:", err.message);
+    console.error("💡 Connection string format should be:");
+    console.error("   mongodb+srv://username:password@cluster.mongodb.net/database");
     console.error("💡 Make sure to:");
-    console.error("   1. Set MONGO_URI environment variable");
-    console.error("   2. Use MongoDB Atlas for cloud deployment");
-    console.error("   3. Check your connection string format");
+    console.error("   1. Replace special characters in password with URL encoding");
+    console.error("   2. Use the correct cluster name");
+    console.error("   3. Check if your IP is whitelisted in MongoDB Atlas");
+    console.error("   4. Verify username and password are correct");
     process.exit(1);
   });
 
