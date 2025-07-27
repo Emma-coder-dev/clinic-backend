@@ -14,7 +14,7 @@ app.use(express.json());
 // Health check endpoint
 app.get("/", (req, res) => {
   res.json({ 
-    message: "QuickClinic Backend API", 
+    message: "ClickClinic Backend API", 
     status: "running",
     timestamp: new Date().toISOString()
   });
