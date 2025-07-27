@@ -31,9 +31,23 @@ app.use('/api/admin', require('./routes/admin'));
 app.use('/api/chat', require('./routes/chat')); // ✅ THIS is the missing one!
 
 // ✅ MongoDB Connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch((err) => console.error("Mongo error:", err));
+const mongoURI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/quickclinic';
+
+if (!process.env.MONGO_URI) {
+  console.warn("⚠️  No MONGO_URI found in environment variables. Using local MongoDB.");
+  console.warn("💡 For production, set MONGO_URI to your MongoDB Atlas connection string.");
+}
+
+mongoose.connect(mongoURI)
+  .then(() => console.log("✅ MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("❌ MongoDB connection error:", err.message);
+    console.error("💡 Make sure to:");
+    console.error("   1. Set MONGO_URI environment variable");
+    console.error("   2. Use MongoDB Atlas for cloud deployment");
+    console.error("   3. Check your connection string format");
+    process.exit(1);
+  });
 
 // ✅ Start Server
 const PORT = process.env.PORT || 5000;
